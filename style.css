@@ -1,1 +1,12 @@
+body {
+    background-color: green;
+}
 
+button {
+    border: none;
+}
+
+.boardDIV {
+    display: flex;
+    flex-wrap: wrap;
+}
