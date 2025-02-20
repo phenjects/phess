@@ -52,7 +52,7 @@ for (let rankDivs = 8; rankDivs > 0; rankDivs--) {
   startPosArr.wpawn.forEach((whitepawn) => {
     pieceCreate = document.createElement("img")
     if (squareCreate.id == whitepawn) {
-      pieceCreate.setAttribute("src", `/assets/phes/lightpawnimg.png`);
+      pieceCreate.setAttribute("src", `assets/phes/lightpawnimg.png`);
     };
   });
   squareCreate.appendChild(pieceCreate);
