@@ -20,7 +20,8 @@ const startPosArr = {
   bbish: ["c8", "f8"],
   bnigh: ["b1", "g1"],
   bnigh: ["b8", "g8"]
-};  
+};
+const squareElementsArr = []
 
 let squareCreate;
 let rankCreate;
@@ -39,6 +40,7 @@ for (let rankDivs = 8; rankDivs > 0; rankDivs--) {
 		squareCreate.setAttribute("class", `${letterArr.indexOf(eachLetter)}`);
 		squareCreate.setAttribute("data-color", `white`);
 		squareCreate.setAttribute("style", `background-color: rgb(207, 223, 205); ${squareStyle}`);
+    squareElementsArr.push(squareCreate.id);
 
 		if (squareCreate.className % 2 == 1 && rankCreate.className % 2 == 0) {
 			squareCreate.setAttribute("data-color", `black`);
@@ -47,13 +49,17 @@ for (let rankDivs = 8; rankDivs > 0; rankDivs--) {
 			squareCreate.setAttribute("data-color", `black`);
 			squareCreate.setAttribute("style", `background-color: rgb(68, 75, 67); ${squareStyle}`);
 		};
-		rankCreate.appendChild(squareCreate);
-	});
-  startPosArr.wpawn.forEach((whitepawn) => {
-    pieceCreate = document.createElement("img")
-    if (squareCreate.id == whitepawn) {
-      pieceCreate.setAttribute("src", `assets/phes/lightpawnimg.png`);
-    };
-  });
-  squareCreate.appendChild(pieceCreate);
+    rankCreate.appendChild(squareCreate);
+  }); 
+  for (let i = 0; i < 7; i++) { 
+    startPosArr.wpawn.forEach((whitepawn) => {
+      pieceCreate = document.createElement("img")
+      if (squareElementsArr.includes(startPosArr.wpawn)) {
+        pieceCreate.setAttribute("src", `assets/phes/lightpawnimg.png`);
+      };
+    squareCreate.appendChild(pieceCreate);  
+    });
+  }  
 };
+
+
