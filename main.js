@@ -3,10 +3,9 @@
   ! removed double for loop
   ! rankDiv was originally useless, only storing the num 8. I could of just used it AS "i" but I was a dumbass
 */
+
+"use strict";
 const phessboard = document.getElementById("boardDIV");
-const letterArr = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const letterNumbers = ["1", "2", "3", "4", "5", "6", "7", "8"];
-const squareStyle = `color: transparent; width: 96px; height: 96px; border: none; margin: 0px;`;
 const startPosArr = {
   wking: ["e1"],
   bking: ["e8"],
@@ -24,40 +23,29 @@ const startPosArr = {
 const squareElementsArr = [];
 const pieceElementsArr = [];
 
-let squareCreate;
-let rankCreate;
-let pieceCreate;
+let currentPieceSelect;
 
 for (let rankDivs = 8; rankDivs > 0; rankDivs--) {
-  rankCreate = document.createElement("div");
+  const letterArr = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  const rankCreate = document.createElement("div");
   rankCreate.id = rankDivs;
   rankCreate.className = rankDivs;
   rankCreate.style = `display: flex; justify-content: center;`;
   phessboard.appendChild(rankCreate);
 
+  const squareStyle = `color: transparent; width: 96px; height: 96px; border: none; margin: 0px;`;
+
   letterArr.forEach((eachLetter) => {
-    squareCreate = document.createElement("div");
+    const squareCreate = document.createElement("div");
     squareCreate.id = `${eachLetter}${rankDivs}`;
     squareCreate.className = `${letterArr.indexOf(eachLetter)}`;
-    squareCreate.setAttribute(
-      "style",
-      `background-color: rgb(207, 223, 205); ${squareStyle}`
-    );
+    squareCreate.setAttribute("style", `background-color: rgb(207, 223, 205); ${squareStyle}`);
     squareElementsArr.push(squareCreate);
 
     if (squareCreate.className % 2 == 1 && rankCreate.className % 2 == 0) {
-      squareCreate.setAttribute(
-        "style",
-        `background-color: rgb(68, 75, 67); ${squareStyle}`
-      );
-    } else if (
-      squareCreate.className % 2 == 0 &&
-      rankCreate.className % 2 == 1
-    ) {
-      squareCreate.setAttribute(
-        "style",
-        `background-color: rgb(68, 75, 67); ${squareStyle}`
-      );
+      squareCreate.setAttribute("style", `background-color: rgb(68, 75, 67); ${squareStyle}`);
+    } else if (squareCreate.className % 2 == 0 && rankCreate.className % 2 == 1) {
+      squareCreate.setAttribute("style", `background-color: rgb(68, 75, 67); ${squareStyle}`);
     }
     rankCreate.appendChild(squareCreate);
   });
@@ -82,28 +70,6 @@ function pieceImageDirectory(pieceType) {
   return pieceImages[pieceType];
 }
 
-// INFO: using the pieceType parameter, it places the pieces on their
-// designated squares using info from startPosArr. it determines how
-// many copies of that piece are needed based on the amount of elements
-// on each array in startPosArr.
-for (const [pieceType, positions] of Object.entries(startPosArr)) {
-  positions.forEach((position) => {
-    pieceCreate = document.createElement("img");
-    pieceCreate.src = pieceImageDirectory(pieceType);
-    pieceCreate.id = pieceType;
-    pieceCreate.setAttribute("style", `width: 96px;`);
-    pieceElementsArr.push(pieceCreate);
-
-    const startPosSquare = document.getElementById(position);
-
-    // INFO: gonna be honest, i haven't a clue what this does.
-    if (startPosSquare) {
-      startPosSquare.appendChild(pieceCreate);
-    }
-    movementMain();
-  });
-}
-
 function movementMain() {
   pieceElementsArr.forEach((eachPiece) => {
     eachPiece.addEventListener("click", (pieceClick) => {
@@ -111,14 +77,35 @@ function movementMain() {
       pieceClick.stopPropagation();
 
       currentPieceSelect = eachPiece;
-      inSelect = true;
+
     });
   });
   squareElementsArr.forEach((eachSquare) => {
-    eachSquare.onclick = function () {
-      inSelect = false;
+    eachSquare.addEventListener("click", (squareSelected) => {
       currentPieceSelect.remove();
-      eachSquare.appendChild(currentPieceSelect);
-    };
+      eachSquare.appendChild(currentPieceSelect); 
+    });
+  });
+};
+
+// INFO: value of the for loop is based off of startPosArr. i forgot
+// what Object.entries does in detail but i think it's just a forEach 
+// for objects (don't quote me on that).
+for (const [pieceType, positions] of Object.entries(startPosArr)) {
+  positions.forEach((position) => {
+    const pieceCreate = document.createElement("img");
+    pieceCreate.src = pieceImageDirectory(pieceType);
+    pieceCreate.id = pieceType;
+    pieceCreate.dataset.color = pieceType.charAt(0);
+    pieceCreate.setAttribute("style", `width: 96px;`);
+    pieceElementsArr.push(pieceCreate);
+
+    const startPosSquare = document.getElementById(position);
+
+    if (startPosSquare) {
+      startPosSquare.appendChild(pieceCreate);
+    }
+    movementMain();
   });
 }
+
