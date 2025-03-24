@@ -1,11 +1,5 @@
-/* 
-  NOTE: some lines were highly revised with ol' deepseek giving me inspiration (did NOT copy and paste) 
-  ! removed double for loop
-  ! rankDiv was originally useless, only storing the num 8. I could of just used it AS "i" but I was a dumbass
-*/
-
 "use strict";
-const phessboard = document.getElementById("boardDIV");
+
 const startPosArr = {
   wking: ["e1"],
   bking: ["e8"],
@@ -23,35 +17,45 @@ const startPosArr = {
 const squareElementsArr = [];
 const pieceElementsArr = [];
 
-let currentPieceSelect;
-
 for (let rankDivs = 8; rankDivs > 0; rankDivs--) {
   const letterArr = ["a", "b", "c", "d", "e", "f", "g", "h"];
-  const rankCreate = document.createElement("div");
+  const rankCreate = document.createElement("section");
+  const phessboard = document.getElementById("phessboardID");
+
   rankCreate.id = rankDivs;
   rankCreate.className = rankDivs;
   rankCreate.style = `display: flex; justify-content: center;`;
   phessboard.appendChild(rankCreate);
 
-  const squareStyle = `color: transparent; width: 96px; height: 96px; border: none; margin: 0px;`;
-
   letterArr.forEach((eachLetter) => {
     const squareCreate = document.createElement("div");
+    const squareStyle = `color: transparent; width: 96px; height: 96px; border: none; margin: 0px;`;
     squareCreate.id = `${eachLetter}${rankDivs}`;
     squareCreate.className = `${letterArr.indexOf(eachLetter)}`;
-    squareCreate.setAttribute("style", `background-color: rgb(207, 223, 205); ${squareStyle}`);
+    squareCreate.setAttribute(
+      "style",
+      `background-color: rgb(207, 223, 205); ${squareStyle}`,
+    );
     squareElementsArr.push(squareCreate);
 
     if (squareCreate.className % 2 == 1 && rankCreate.className % 2 == 0) {
-      squareCreate.setAttribute("style", `background-color: rgb(68, 75, 67); ${squareStyle}`);
-    } else if (squareCreate.className % 2 == 0 && rankCreate.className % 2 == 1) {
-      squareCreate.setAttribute("style", `background-color: rgb(68, 75, 67); ${squareStyle}`);
+      squareCreate.setAttribute(
+        "style",
+        `background-color: rgb(68, 75, 67); ${squareStyle}`,
+      );
+    } else if (
+      squareCreate.className % 2 == 0 &&
+      rankCreate.className % 2 == 1
+    ) {
+      squareCreate.setAttribute(
+        "style",
+        `background-color: rgb(68, 75, 67); ${squareStyle}`,
+      );
     }
     rankCreate.appendChild(squareCreate);
   });
 }
 
-// INFO: easier management of the svg sources on the board
 function pieceImageDirectory(pieceType) {
   const pieceImages = {
     wking: "assets/phes/lightkingimg.svg",
@@ -70,27 +74,6 @@ function pieceImageDirectory(pieceType) {
   return pieceImages[pieceType];
 }
 
-function movementMain() {
-  pieceElementsArr.forEach((eachPiece) => {
-    eachPiece.addEventListener("click", (pieceClick) => {
-      // INFO: my saving grace :heart:
-      pieceClick.stopPropagation();
-
-      currentPieceSelect = eachPiece;
-
-    });
-  });
-  squareElementsArr.forEach((eachSquare) => {
-    eachSquare.addEventListener("click", (squareSelected) => {
-      currentPieceSelect.remove();
-      eachSquare.appendChild(currentPieceSelect); 
-    });
-  });
-};
-
-// INFO: value of the for loop is based off of startPosArr. i forgot
-// what Object.entries does in detail but i think it's just a forEach 
-// for objects (don't quote me on that).
 for (const [pieceType, positions] of Object.entries(startPosArr)) {
   positions.forEach((position) => {
     const pieceCreate = document.createElement("img");
@@ -102,10 +85,42 @@ for (const [pieceType, positions] of Object.entries(startPosArr)) {
 
     const startPosSquare = document.getElementById(position);
 
-    if (startPosSquare) {
-      startPosSquare.appendChild(pieceCreate);
-    }
-    movementMain();
+    startPosSquare ? startPosSquare.appendChild(pieceCreate) : console.clear();
   });
 }
 
+function movementMain() {
+  let inSelect = false;
+  let currentPieceSelect;
+
+  pieceElementsArr.forEach((eachPiece) => {
+    eachPiece.addEventListener("click", (piece) => {
+      piece.stopPropagation();
+
+      switch (inSelect) {
+        case false:
+          currentPieceSelect = eachPiece;
+          inSelect = true;
+          break;
+
+        case true:
+          piece.target.replaceWith(currentPieceSelect);
+          inSelect = false;
+          break;
+      }
+    });
+  });
+  squareElementsArr.forEach((eachSquare) => {
+    eachSquare.addEventListener("click", (square) => {
+      switch (inSelect) {
+        case true:
+          eachSquare.appendChild(currentPieceSelect);
+          inSelect = false;
+        case false:
+          console.error("ERROR: Please select a piece on the board.");
+      }
+    });
+  });
+}
+
+movementMain();

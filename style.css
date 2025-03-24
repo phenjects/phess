@@ -12,3 +12,11 @@ button {
     flex-direction: column;
     flex-wrap: wrap;
 }
+
+.headerCLASS {
+  text-align: center;
+  font-weight: bold;
+  font-family: "Courier";
+  font-size: 3rem;
+  margin: 20px;
+}
