@@ -39,18 +39,9 @@ for (let rankDivs = 8; rankDivs > 0; rankDivs--) {
     squareElementsArr.push(squareCreate);
 
     if (squareCreate.className % 2 == 1 && rankCreate.className % 2 == 0) {
-      squareCreate.setAttribute(
-        "style",
-        `background-color: rgb(68, 75, 67); ${squareStyle}`,
-      );
-    } else if (
-      squareCreate.className % 2 == 0 &&
-      rankCreate.className % 2 == 1
-    ) {
-      squareCreate.setAttribute(
-        "style",
-        `background-color: rgb(68, 75, 67); ${squareStyle}`,
-      );
+      squareCreate.setAttribute("style", `background-color: rgb(68, 75, 67); ${squareStyle}`);
+    } else if (squareCreate.className % 2 == 0 && rankCreate.className % 2 == 1) {
+      squareCreate.setAttribute("style", `background-color: rgb(68, 75, 67); ${squareStyle}`);
     }
     rankCreate.appendChild(squareCreate);
   });
@@ -94,7 +85,7 @@ function movementMain() {
   let currentPieceSelect;
 
   pieceElementsArr.forEach((eachPiece) => {
-    eachPiece.addEventListener("click", (piece) => {
+    eachPiece.onclick = function(piece) {
       piece.stopPropagation();
 
       switch (inSelect) {
@@ -108,10 +99,10 @@ function movementMain() {
           inSelect = false;
           break;
       }
-    });
+    };
   });
   squareElementsArr.forEach((eachSquare) => {
-    eachSquare.addEventListener("click", (square) => {
+    eachSquare.onclick = function() {
       switch (inSelect) {
         case true:
           eachSquare.appendChild(currentPieceSelect);
@@ -119,7 +110,7 @@ function movementMain() {
         case false:
           console.error("ERROR: Please select a piece on the board.");
       }
-    });
+    };
   });
 }
 
